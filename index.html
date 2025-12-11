@@ -1,232 +1,85 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Option AI Assistant v1.0</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-        margin: 20px;
-        background: #f5f7fa;
-        color: #333;
-    }
-
-    h2 { margin-top: 30px; }
-
-    .card {
-        background: white;
-        padding: 18px;
-        border-radius: 12px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        margin-bottom: 25px;
-    }
-
-    input, select, textarea {
-        width: 100%;
-        padding: 10px;
-        margin: 6px 0 16px 0;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 16px;
-    }
-
-    button {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        background: #4a75eb;
-        color: white;
-        font-size: 17px;
-        border-radius: 10px;
-        margin-top: 10px;
-    }
-
-    button:hover { background: #385ed4; }
-
-    .result-box {
-        background: #eef3ff;
-        border-left: 5px solid #4a75eb;
-        padding: 12px;
-        border-radius: 8px;
-        margin-top: 15px;
-    }
-
-    .record-item {
-        padding: 10px;
-        background: #fff;
-        border-radius: 8px;
-        border: 1px solid #eee;
-        margin-top: 10px;
-    }
-</style>
+  <meta charset="UTF-8" />
+  <title>AI Options Assistant</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
 
-<h1>📈 Option AI Assistant v1.0</h1>
-<p>一个简单可靠的“Call / Put”辅助工具（学习用途，不提供投资建议）</p>
+  <h1>AI Options Assistant</h1>
 
+  <!-- ===========================
+       SECTION 1: DATA INPUT
+  ============================ -->
+  <section class="card">
+    <h2>📊 输入市场数据（手动或自动抓取）</h2>
 
-<!-- ============================
-      第一部分：数据采集区
-============================ -->
-<div class="card">
-<h2>① 数据采集区</h2>
+    <label>Fear & Greed Index:
+      <input type="number" id="fg" placeholder="例如：36">
+    </label>
 
-<button onclick="openLink('https://edition.cnn.com/markets/fear-and-greed')">查看 Fear & Greed Index</button>
-<button onclick="openLink('https://www.cboe.com/tradable_products/vix/')">查看 VIX</button>
-<button onclick="openLink('https://www.marketwatch.com/investing/fund/spy')">查看 SPY 实时图</button>
-<button onclick="openLink('https://ycharts.com/indicators/cboe_equity_put_call_ratio')">查看 Put/Call Ratio</button>
-<br><br>
+    <label>Put/Call Ratio:
+      <input type="number" id="pcr" step="0.01" placeholder="例如：0.89">
+    </label>
 
-<label>Fear & Greed Index：</label>
-<input id="fg" placeholder="例如：36">
+    <label>VIX 指数:
+      <input type="number" id="vix" placeholder="例如：12.5">
+    </label>
 
-<label>VIX：</label>
-<input id="vix" placeholder="例如：12.4">
+    <label>10Y 美债利率 (%):
+      <input type="number" id="us10y" step="0.01" placeholder="例如：3.55">
+    </label>
 
-<label>Put/Call Ratio：</label>
-<input id="pc" placeholder="例如：0.92">
+    <label>SPY 今日趋势强度（-3 ~ +3）:
+      <input type="number" id="trend" step="1" min="-3" max="3" placeholder="例如：1">
+    </label>
 
-<label>SPY 今日趋势：</label>
-<select id="trend">
-    <option>强上涨</option>
-    <option>弱上涨</option>
-    <option>横盘</option>
-    <option>弱下跌</option>
-    <option>强下跌</option>
-</select>
-</div>
+    <button onclick="calculate()">计算趋势评分</button>
 
+    <div id="result"></div>
+  </section>
 
-<!-- ============================
-      第二部分：计算评分区
-============================ -->
-<div class="card">
-<h2>② 综合评分区（AI辅助）</h2>
+  <!-- ===========================
+       SECTION 2: TRADE RECORDS
+  ============================ -->
+  <section class="card">
+    <h2>📒 我的交易记录（私有，仅存在本机）</h2>
 
-<button onclick="calculateScore()">计算综合评分</button>
+    <label>期权类型:
+      <select id="tradeType">
+        <option value="CALL">CALL</option>
+        <option value="PUT">PUT</option>
+      </select>
+    </label>
 
-<div id="result" class="result-box"></div>
-</div>
+    <label>标的价格:
+      <input type="number" id="underlying" placeholder="例如：690.25">
+    </label>
 
+    <label>行权价:
+      <input type="number" id="strike" placeholder="例如：709">
+    </label>
 
-<!-- ============================
-      第三部分：交易记录区
-============================ -->
-<div class="card">
-<h2>③ 交易记录（学习用途）</h2>
+    <label>权利金（Cost）:
+      <input type="number" id="premium" step="0.01" placeholder="例如：0.14">
+    </label>
 
-<label>日期：</label>
-<input id="tradeDate" type="date">
+    <button onclick="addTrade()">添加记录</button>
 
-<label>决策（Call / Put / Skip）：</label>
-<input id="decision">
+    <ul id="tradeList"></ul>
+  </section>
 
-<label>执行价格（Strike）：</label>
-<input id="strike">
+  <!-- ===========================
+       SECTION 3: FAQ
+  ============================ -->
+  <section class="card">
+    <h2>❓ 常见问题（FAQ）</h2>
+    <div id="faqContent">
+      <!-- FAQ 内容稍后插入 -->
+    </div>
+  </section>
 
-<label>成本（Cost）：</label>
-<input id="cost">
-
-<label>备注：</label>
-<textarea id="notes" rows="3"></textarea>
-
-<button onclick="saveRecord()">保存记录</button>
-
-<h3>历史记录：</h3>
-<div id="history"></div>
-</div>
-
-
-<!-- ============================
-      JS 逻辑
-============================ -->
-<script>
-function openLink(url) {
-    window.open(url, "_blank");
-}
-
-function calculateScore() {
-    let fg = Number(document.getElementById("fg").value);
-    let vix = Number(document.getElementById("vix").value);
-    let pc = Number(document.getElementById("pc").value);
-    let trend = document.getElementById("trend").value;
-
-    let bull = 0;
-    let bear = 0;
-
-    // Fear & Greed
-    if (fg > 60) bull += 2;
-    if (fg < 40) bear += 2;
-
-    // VIX（低=看涨）
-    if (vix < 15) bull += 1;
-    if (vix > 18) bear += 1;
-
-    // Put/Call
-    if (pc < 0.95) bull += 2;
-    if (pc > 1.10) bear += 2;
-
-    // 趋势
-    if (trend === "强上涨") bull += 3;
-    if (trend === "弱上涨") bull += 1;
-    if (trend === "弱下跌") bear += 1;
-    if (trend === "强下跌") bear += 3;
-
-    // 结论
-    let conclusion = "";
-    if (bull - bear >= 3) conclusion = "➡️ 倾向：CALL（看涨）";
-    else if (bear - bull >= 3) conclusion = "➡️ 倾向：PUT（看跌）";
-    else conclusion = "➡️ 中性：不建议交易";
-
-    document.getElementById("result").innerHTML =
-        `<b>看涨分数：</b>${bull}<br>
-         <b>看跌分数：</b>${bear}<br><br>
-         <h3>${conclusion}</h3>`;
-}
-
-
-// ======== 保存交易记录 ========
-
-function saveRecord() {
-    let data = {
-        date: tradeDate.value,
-        decision: decision.value,
-        strike: strike.value,
-        cost: cost.value,
-        notes: notes.value
-    };
-
-    let records = JSON.parse(localStorage.getItem("tradeRecords") || "[]");
-    records.push(data);
-    localStorage.setItem("tradeRecords", JSON.stringify(records));
-
-    loadRecords();
-    alert("已保存！");
-}
-
-function loadRecords() {
-    let records = JSON.parse(localStorage.getItem("tradeRecords") || "[]");
-    let html = "";
-
-    records.forEach(r => {
-        html += `
-        <div class="record-item">
-            <b>${r.date}</b><br>
-            决策：${r.decision}<br>
-            Strike：${r.strike}<br>
-            Cost：${r.cost}<br>
-            备注：${r.notes}
-        </div>`;
-    });
-
-    document.getElementById("history").innerHTML = html;
-}
-
-loadRecords();
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
