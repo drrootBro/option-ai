@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crypto AI Assistant – BTC / ETH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card-bg: #111827;
+      --accent: #3b82f6;
+      --accent-soft: #1d4ed8;
+      --text: #e5e7eb;
+      --subtext: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text);
+      padding: 16px;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      font-size: 1.6rem;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--subtext);
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto 40px auto;
+    }
+    .card {
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.15), rgba(15,23,42,0.98));
+      border-radius: 14px;
+      padding: 18px 16px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.75);
+    }
+    .card h2 {
+      margin-top: 2px;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    .card p.desc {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: var(--subtext);
+      font-size: 0.85rem;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: var(--subtext);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.5);
+    }
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button:hover {
+      filter: brightness(1.05);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .row > * {
+      flex: 1 1 160px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .pill-row button {
+      flex: 1 1 120px;
+      padding: 8px 10px;
+      margin-top: 0;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--subtext);
+    }
+    .pill-row button:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .asset-switch {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .asset-switch button {
+      width: auto;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--subtext);
+    }
+    .asset-switch button.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: white;
+      border-color: transparent;
+    }
+
+    .result-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      font-size: 0.9rem;
+    }
+    .score-line {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin-left: 4px;
+    }
+    .tag-bull { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .tag-bear { background: rgba(239,68,68,0.15); color: #f87171; }
+    .tag-neutral { background: rgba(148,163,184,0.2); color: #e5e7eb; }
+
+    .trade-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .trade-list li {
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(55,65,81,0.7);
+      margin-bottom: 6px;
+    }
+    .trade-list span.asset {
+      font-weight: 600;
+      margin-right: 4px;
+      color: #93c5fd;
+    }
+    .trade-list span.side-long { color: #4ade80; }
+    .trade-list span.side-short { color: #f87171; }
+
+    details {
+      margin-bottom: 8px;
+    }
+    summary {
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .faq-body {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      margin-top: 4px;
+    }
+
+    .disclaimer {
+      font-size: 0.75rem;
+      color: var(--subtext);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Crypto AI Assistant</h1>
+    <div class="subtitle">
+      BTC / ETH方向评估 & 个人交易笔记（学习用途，不构成投资建议）
+    </div>
+
+    <!-- 资产切换 -->
+    <div class="asset-switch">
+      <button id="btnBTC" class="active" onclick="setAsset('BTC')">BTC</button>
+      <button id="btnETH" onclick="setAsset('ETH')">ETH</button>
+    </div>
+
+    <!-- 1. 市场数据输入 -->
+    <section class="card">
+      <h2>① Market Data</h2>
+      <p class="desc" id="assetDesc">
+        Current asset: <b>BTC</b>. Fill in the fields below based on the suggested data sources.
+      </p>
+
+      <div class="pill-row">
+        <button onclick="openLink('https://alternative.me/crypto/fear-and-greed-index/')">Crypto Fear &amp; Greed Index</button>
+        <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT')">BTCUSDT Chart</button>
+        <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:ETHUSDT')">ETHUSDT Chart</button>
+        <button onclick="openLink('https://www.coinglass.com/')" title="Funding / OI / Liquidations">
+          Funding &amp; OI (Coinglass)
+        </button>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Crypto Fear &amp; Greed Index</label>
+          <input id="fg" type="number" placeholder="0 - 100, e.g. 36" />
+        </div>
+        <div>
+          <label>Funding Rate (% / 8h)</label>
+          <input id="funding" type="number" step="0.001" placeholder="e.g. 0.01 or -0.02" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Trend strength (−3 to +3)</label>
+          <input id="trend" type="number" min="-3" max="3" step="1" placeholder="e.g. 1" />
+        </div>
+        <div id="relBox">
+          <label id="relLabel">BTC dominance / key relative metric</label>
+          <input id="relMetric" type="number" step="0.1" placeholder="BTC dom %, e.g. 52" />
+        </div>
+      </div>
+
+      <label>News & sentiment (−3 to +3)</label>
+      <input id="newsSentiment" type="number" min="-3" max="3" step="1" placeholder="e.g. 0 (no strong news)" />
+
+      <button onclick="calculateScore()">Calculate signal</button>
+
+      <div id="result" class="result-box">
+        Fill the data and click “Calculate signal”.
+      </div>
+      <div class="disclaimer">
+        Score = 简化版情绪 + 资金费率 + 趋势 + 相对强弱，只用于方向训练，不是买卖指令。
+      </div>
+    </section>
+
+    <!-- 2. 交易记录（本机私有） -->
+    <section class="card">
+      <h2>② My Trades (Private)</h2>
+      <p class="desc">
+        Trades are stored only in your browser (localStorage). Nobody else can see them, even on the same URL.
+      </p>
+
+      <div class="row">
+        <div>
+          <label>Side</label>
+          <select id="side">
+            <option value="LONG">LONG (看多)</option>
+            <option value="SHORT">SHORT (看空)</option>
+          </select>
+        </div>
+        <div>
+          <label>Entry price</label>
+          <input id="entry" type="number" step="0.01" placeholder="e.g. 42000" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Position size (optional)</label>
+          <input id="size" type="number" step="0.0001" placeholder="e.g. 0.05 BTC" />
+        </div>
+        <div>
+          <label>Target / stop idea (optional)</label>
+          <input id="target" type="text" placeholder="e.g. TP: +5%, SL: −3%" />
+        </div>
+      </div>
+
+      <label>Notes</label>
+      <textarea id="notes" placeholder="Why did you take this trade? What did the signal say?"></textarea>
+
+      <button onclick="addTrade()">Save trade</button>
+
+      <ul id="tradeList" class="trade-list"></ul>
+    </section>
+
+    <!-- 3. FAQ -->
+    <section class="card">
+      <h2>③ FAQ – How to use this tool</h2>
+
+      <details open>
+        <summary>Is this giving me buy/sell signals?</summary>
+        <div class="faq-body">
+          No. It gives a <b>directional bias score</b> based on a few simple inputs (Fear &amp; Greed, funding, trend, relative strength, news).
+          It is for training &amp; journaling, not financial advice.
+        </div>
+      </details>
+
+      <details>
+        <summary>Why separate BTC and ETH models?</summary>
+        <div class="faq-body">
+          BTC is more macro / liquidity driven, ETH is more relative-strength / ecosystem driven.
+          They respond differently to the same market conditions, so they use slightly different weights.
+        </div>
+      </details>
+
+      <details>
+        <summary>What does the score roughly mean?</summary>
+        <div class="faq-body">
+          <ul>
+            <li><b>Score ≥ +5</b>: strong bullish bias → only consider LONGs, be strict with risk.</li>
+            <li><b>+1 to +4</b>: mild bullish → small LONGs or scale-in.</li>
+            <li><b>-1 to -4</b>: mild bearish → small SHORTs or hedges.</li>
+            <li><b>≤ -5</b>: strong bearish → only consider SHORTs, strict risk.</li>
+            <li><b>≈ 0</b>: noisy / chop → often best to stay flat.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>What is funding rate and why does it matter?</summary>
+        <div class="faq-body">
+          Funding is the fee between longs and shorts in perpetual futures. Positive funding means longs pay shorts
+          (market is leaning bullish). Negative funding means shorts pay longs (leaning bearish or crowded shorts).
+          Extreme funding often means crowded positioning and higher risk of squeeze.
+        </div>
+      </details>
+
+      <details>
+        <summary>Why store trades locally instead of on a server?</summary>
+        <div class="faq-body">
+          To keep your trades <b>private</b>. Everything is stored only in your browser (localStorage).
+          Clearing browser data will remove them; otherwise no one else, including the website owner, sees them.
+        </div>
+      </details>
+
+      <details>
+        <summary>Can this model be used for other coins?</summary>
+        <div class="faq-body">
+          Not directly. BTC / ETH are large, relatively liquid assets. Smaller altcoins are more narrative/illiquidity driven.
+          You can still journal alt trades here, but the score logic is tuned for BTC &amp; ETH.
+        </div>
+      </details>
+
+      <p class="disclaimer">
+        This tool is for education and self-discipline training. It does not consider your personal situation,
+        leverage, liquidation, or exchange risk. Always use tiny size while learning.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    let currentAsset = "BTC";
+    const btnBTC = document.getElementById("btnBTC");
+    const btnETH = document.getElementById("btnETH");
+    const assetDesc = document.getElementById("assetDesc");
+    const relLabel = document.getElementById("relLabel");
+    const relMetricInput = document.getElementById("relMetric");
+    const resultBox = document.getElementById("result");
+    const tradeListEl = document.getElementById("tradeList");
+
+    // ---- asset switching ----
+    function setAsset(asset) {
+      currentAsset = asset;
+      if (asset === "BTC") {
+        btnBTC.classList.add("active");
+        btnETH.classList.remove("active");
+        assetDesc.innerHTML = 'Current asset: <b>BTC</b>. Focus on global crypto risk sentiment and BTC dominance.';
+        relLabel.textContent = "BTC dominance (%)";
+        relMetricInput.placeholder = "e.g. 52";
+      } else {
+        btnETH.classList.remove("active");
+        btnETH.classList.add("active");
+        btnBTC.classList.remove("active");
+        assetDesc.innerHTML = 'Current asset: <b>ETH</b>. Focus on ETH vs BTC relative strength and L2 / ecosystem activity.';
+        relLabel.textContent = "ETH/BTC relative strength (−3 to +3)";
+        relMetricInput.placeholder = "e.g. 1 (ETH stronger than BTC)";
+      }
+      renderTrades();
+    }
+
+    function openLink(url) {
+      window.open(url, "_blank");
+    }
+
+    // ---- scoring logic ----
+    function calculateScore() {
+      const fg = Number(document.getElementById("fg").value || 0);
+      const funding = Number(document.getElementById("funding").value || 0);
+      const trend = Number(document.getElementById("trend").value || 0);
+      const relMetric = Number(document.getElementById("relMetric").value || 0);
+      const newsSentiment = Number(document.getElementById("newsSentiment").value || 0);
+
+      let score = 0;
+      let lines = [];
+
+      // Crypto Fear & Greed (common)
+      if (fg > 60) { score += 2; lines.push("Fear & Greed > 60 → +2 (risk-on)"); }
+      else if (fg < 30) { score -= 2; lines.push("Fear & Greed < 30 → -2 (fear)"); }
+      else { lines.push("Fear & Greed in neutral zone (no strong impact)"); }
+
+      // Funding
+      if (funding > 0.03) {
+        score += 1;
+        lines.push("High positive funding → +1 (bullish but crowded longs)");
+      } else if (funding > 0.0) {
+        score += 0.5;
+        lines.push("Mild positive funding → +0.5 (healthy bullish tilt)");
+      } else if (funding < -0.03) {
+        score -= 1;
+        lines.push("High negative funding → -1 (crowded shorts, risk of squeeze)");
+      } else if (funding < 0.0) {
+        score -= 0.5;
+        lines.push("Mild negative funding → -0.5 (slight bearish tilt)");
+      } else {
+        lines.push("Funding near 0 → neutral");
+      }
+
+      // Asset-specific parts
+      if (currentAsset === "BTC") {
+        // BTC dominance: higher dom often means BTC leading, safer beta
+        if (relMetric > 50) { score += 1; lines.push("BTC dominance > 50% → +1 (BTC leading the market)"); }
+        else if (relMetric < 40) { score -= 1; lines.push("BTC dominance < 40% → -1 (alts leading, BTC weaker)"); }
+      } else {
+        // ETH relative to BTC: input as -3..+3
+        score += relMetric;
+        lines.push("ETH/BTC relative strength contributed: " + relMetric.toFixed(1));
+      }
+
+      // Trend
+      score += trend;
+      lines.push("Trend contribution: " + trend.toFixed(1));
+
+      // News sentiment
+      score += newsSentiment;
+      lines.push("News / narrative contribution: " + newsSentiment.toFixed(1));
+
+      // Build conclusion
+      let tagClass = "tag-neutral";
+      let label = "Chop / wait";
+      if (score >= 5) { tagClass = "tag-bull"; label = "Strong bullish bias"; }
+      else if (score >= 1) { tagClass = "tag-bull"; label = "Mild bullish bias"; }
+      else if (score <= -5) { tagClass = "tag-bear"; label = "Strong bearish bias"; }
+      else if (score <= -1) { tagClass = "tag-bear"; label = "Mild bearish bias"; }
+
+      const html =
+        `<div class="score-line">
+           Asset: <b>${currentAsset}</b> – Score: <b>${score.toFixed(1)}</b>
+           <span class="tag ${tagClass}">${label}</span>
+         </div>
+         <div>${lines.map(l => "• " + l).join("<br>")}</div>
+         <div style="margin-top:8px;color:#9ca3af;font-size:0.8rem;">
+           Use this only as directional context. Position sizing &amp; risk are more important than the direction itself.
+         </div>`;
+      resultBox.innerHTML = html;
+    }
+
+    // ---- trade journal (localStorage, private) ----
+    function getAllTrades() {
+      try {
+        const raw = localStorage.getItem("cryptoTrades");
+        if (!raw) return [];
+        return JSON.parse(raw);
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveAllTrades(trades) {
+      localStorage.setItem("cryptoTrades", JSON.stringify(trades));
+    }
+
+    function addTrade() {
+      const side = document.getElementById("side").value;
+      const entry = document.getElementById("entry").value;
+      const size = document.getElementById("size").value;
+      const target = document.getElementById("target").value;
+      const notes = document.getElementById("notes").value;
+
+      if (!entry) {
+        alert("Please enter an entry price.");
+        return;
+      }
+
+      const trades = getAllTrades();
+      trades.push({
+        asset: currentAsset,
+        side,
+        entry,
+        size,
+        target,
+        notes,
+        time: new Date().toLocaleString()
+      });
+      saveAllTrades(trades);
+
+      document.getElementById("entry").value = "";
+      document.getElementById("size").value = "";
+      document.getElementById("target").value = "";
+      document.getElementById("notes").value = "";
+
+      renderTrades();
+    }
+
+    function renderTrades() {
+      const trades = getAllTrades().filter(t => t.asset === currentAsset);
+      if (!trades.length) {
+        tradeListEl.innerHTML = "<li>No trades yet for " + currentAsset + ".</li>";
+        return;
+      }
+      let html = "";
+      trades.slice().reverse().forEach(t => {
+        const sideClass = t.side === "LONG" ? "side-long" : "side-short";
+        html += `<li>
+          <div><span class="asset">[${t.asset}]</span>
+               <span class="${sideClass}">${t.side}</span> @ ${t.entry}
+               ${t.size ? " · Size: " + t.size : ""}</div>
+          ${t.target ? `<div>Plan: ${t.target}</div>` : ""}
+          ${t.notes ? `<div>Notes: ${t.notes}</div>` : ""}
+          <div style="color:#6b7280;font-size:0.75rem;">${t.time}</div>
+        </li>`;
+      });
+      tradeListEl.innerHTML = html;
+    }
+
+    // init
+    renderTrades();
+  </script>
+</body>
+</html>
