@@ -1,137 +1,137 @@
-🟦 ① 期权小白到高手之路 — 完整 FAQ（直接复制到你的网页）
-🎯 基础概念类
-Q1：为什么同一个期权昨天 0.16，今天就变成 0.14？
-
-因为时间价值（Theta）每天在扣钱。
-弱上涨不足以抵消时间衰减，所以 OTM 期权会自动变便宜。
-便宜不是好事，是更接近归零。
-
-Q2：今天买 0.14 比昨天买 0.16 更划算吗？
-
-是的。
-因为你花更少的钱承担同样的未来走势风险。
-昨天买的人并没有任何优势，只是更早承担了时间损耗。
-
-Q3：什么是远价外（OTM）？为什么便宜？
-
-OTM = 当前价格离行权价很远。
-便宜原因是市场认为它 很难涨到行权价。
-价格低 ≠ 好机会，而是 低概率的反映。
-
-Q4：什么是大阳线、大阴线？
-
-大阳线：强力上涨棒，代表买盘强势。
-
-大阴线：大幅下跌，代表卖压强势。
-强阳/强阴是你做 OTM 期权最重要的信号。
-
-🎯 操作逻辑类
-Q5：什么时候绝对不要买 OTM 期权？（禁区）
-
-横盘（Sideways）
-
-弱趋势 + 快到期
-
-重大事件前、IV 高（溢价昂贵）
-
-横盘=最大亏钱地。
-
-Q6：什么时候可以买？（弱趋势）
-
-方向明确但不强时，
-适合买 小额度练习单（$10–50），
-目标收益 = 50%。
-
-Q7：什么时候最值得买？（强趋势）
-
-强阳线、加速上涨
-
-强阴线、连续下杀
-
-放量
-
-下午趋势变强
-
-Put/Call 倾向明显
-
-这是 OTM 的 黄金时间，可以做大一点。
-
-Q8：Call 和 Put 如何选择？
-
-系统会根据 5 大数据评分：
-
-Fear & Greed Index
-
-Put/Call Ratio
-
-VIX
-
-10Y Treasury Yield
-
-SPY 当日走势强弱
-
-得分 > 0 → Call（看涨）
-得分 < 0 → Put（看跌）
-
-你不用自己判断。
-
-🎯 盈亏规则类
-Q9：0.14 买进，涨到多少算 50% 收益？
-
-涨到 0.21（+50%）
-涨到 0.28（+100%）
-
-推公式非常简单：
-
-目标价
-=
-成本
-×
-(
-1
-+
-收益率
-)
-目标价=成本×(1+收益率)
-Q10：到期日前涨到行权价就一定赚钱吗？
-
-不一定，看你是否在上涨过程中卖出。
-
-时间越接近到期 → 波动越大 → 风险越大。
-
-Q11：如果不卖，到期日会怎样？
-
-如果到期日仍然低于行权价（709）：
-
-Call 期权价值 = 0（归零）
-
-Q12：为什么 SPY 涨，你的期权反而跌？
-
-三个可能：
-
-涨幅不够（弱上涨）
-
-时间价值今天扣得更多（Theta）
-
-隐含波动率 IV 下跌（影响价格）
-
-Q13：是否可以同时买 Call 和 Put？
-
-叫“Straddle / Strangle”，非常高级，需要更高的判断力。
-目前不建议新手用，因为：
-
-两边都亏的概率远大于你想象
-
-时间价值双倍扣
-
-Q14：为什么散户亏钱？我为什么能比他们强？
-
-散户失败的三点：
-
-无系统，不看数据，凭感觉买
-
-不懂 Theta（时间损耗）
-
-盯盘情绪化，导致过度交易
-
-你走的是“数据 + 系统化”模式 → 压倒大部分散户。
+<h1 data-start="127" data-end="167">🟦 <strong data-start="132" data-end="167">期权小白到高手之路&nbsp;</strong></h1>
+<h1 data-start="127" data-end="167"><strong data-start="132" data-end="167"> FAQ</strong></h1>
+<h2 data-start="169" data-end="184"><strong data-start="172" data-end="184">🎯 基础概念类</strong></h2>
+<h3 data-start="186" data-end="224"><strong data-start="190" data-end="224">Q1：为什么同一个期权昨天 0.16，今天就变成 0.14？</strong></h3>
+<p data-start="225" data-end="297">因为时间价值（Theta）每天在扣钱。<br data-start="244" data-end="247" /> 弱上涨不足以抵消时间衰减，所以 OTM 期权会自动变便宜。<br data-start="276" data-end="279" /> <strong data-start="279" data-end="297">便宜不是好事，是更接近归零。</strong></p>
+<hr data-start="299" data-end="302" />
+<h3 data-start="304" data-end="339"><strong data-start="308" data-end="339">Q2：今天买 0.14 比昨天买 0.16 更划算吗？</strong></h3>
+<p data-start="340" data-end="394">是的。<br data-start="343" data-end="346" /> 因为你花更少的钱承担同样的未来走势风险。<br data-start="366" data-end="369" /> 昨天买的人并没有任何优势，只是更早承担了时间损耗。</p>
+<hr data-start="396" data-end="399" />
+<h3 data-start="401" data-end="432"><strong data-start="405" data-end="430">Q3：什么是远价外（OTM）？为什么便宜？</strong></h3>
+<p data-start="433" data-end="503">OTM = 当前价格离行权价很远。<br data-start="450" data-end="453" /> 便宜原因是市场认为它 <strong data-start="464" data-end="475">很难涨到行权价</strong>。<br data-start="476" data-end="479" /> 价格低 &ne; 好机会，而是 <strong data-start="492" data-end="502">低概率的反映</strong>。</p>
+<hr data-start="505" data-end="508" />
+<h3 data-start="510" data-end="532"><strong data-start="514" data-end="532">Q4：什么是大阳线、大阴线？</strong></h3>
+<ul data-start="533" data-end="606">
+<li data-start="533" data-end="558">
+<p data-start="535" data-end="558"><strong data-start="535" data-end="542">大阳线</strong>：强力上涨棒，代表买盘强势。</p>
+</li>
+<li data-start="559" data-end="606">
+<p data-start="561" data-end="606"><strong data-start="561" data-end="568">大阴线</strong>：大幅下跌，代表卖压强势。<br data-start="581" data-end="584" /> 强阳/强阴是你做 OTM 期权最重要的信号。</p>
+</li>
+</ul>
+<hr data-start="608" data-end="611" />
+<h2 data-start="613" data-end="628"><strong data-start="616" data-end="628">🎯 操作逻辑类</strong></h2>
+<h3 data-start="630" data-end="662"><strong data-start="634" data-end="662">Q5：什么时候绝对不要买 OTM 期权？（禁区）</strong></h3>
+<ul data-start="663" data-end="712">
+<li data-start="663" data-end="679">
+<p data-start="665" data-end="679">横盘（Sideways）</p>
+</li>
+<li data-start="680" data-end="693">
+<p data-start="682" data-end="693">弱趋势 + 快到期</p>
+</li>
+<li data-start="694" data-end="712">
+<p data-start="696" data-end="712">重大事件前、IV 高（溢价昂贵）</p>
+</li>
+</ul>
+<p data-start="714" data-end="723">横盘=最大亏钱地。</p>
+<hr data-start="725" data-end="728" />
+<h3 data-start="730" data-end="754"><strong data-start="734" data-end="754">Q6：什么时候可以买？（弱趋势）</strong></h3>
+<p data-start="755" data-end="804">方向明确但不强时，<br data-start="764" data-end="767" /> 适合买 <strong data-start="771" data-end="789">小额度练习单（$10&ndash;50）</strong>，<br data-start="790" data-end="793" /> 目标收益 = 50%。</p>
+<hr data-start="806" data-end="809" />
+<h3 data-start="811" data-end="836"><strong data-start="815" data-end="836">Q7：什么时候最值得买？（强趋势）</strong></h3>
+<ul data-start="837" data-end="896">
+<li data-start="837" data-end="849">
+<p data-start="839" data-end="849">强阳线、加速上涨</p>
+</li>
+<li data-start="850" data-end="862">
+<p data-start="852" data-end="862">强阴线、连续下杀</p>
+</li>
+<li data-start="863" data-end="869">
+<p data-start="865" data-end="869">放量</p>
+</li>
+<li data-start="870" data-end="880">
+<p data-start="872" data-end="880">下午趋势变强</p>
+</li>
+<li data-start="881" data-end="896">
+<p data-start="883" data-end="896">Put/Call 倾向明显</p>
+</li>
+</ul>
+<p data-start="898" data-end="923">这是 OTM 的 <strong data-start="907" data-end="915">黄金时间</strong>，可以做大一点。</p>
+<hr data-start="925" data-end="928" />
+<h3 data-start="930" data-end="957"><strong data-start="934" data-end="957">Q8：Call 和 Put 如何选择？</strong></h3>
+<p data-start="958" data-end="974">系统会根据 5 大数据评分：</p>
+<ul data-start="975" data-end="1062">
+<li data-start="975" data-end="997">
+<p data-start="977" data-end="997">Fear &amp; Greed Index</p>
+</li>
+<li data-start="998" data-end="1016">
+<p data-start="1000" data-end="1016">Put/Call Ratio</p>
+</li>
+<li data-start="1017" data-end="1024">
+<p data-start="1019" data-end="1024">VIX</p>
+</li>
+<li data-start="1025" data-end="1047">
+<p data-start="1027" data-end="1047">10Y Treasury Yield</p>
+</li>
+<li data-start="1048" data-end="1062">
+<p data-start="1050" data-end="1062">SPY 当日走势强弱</p>
+</li>
+</ul>
+<blockquote data-start="1064" data-end="1104">
+<p data-start="1066" data-end="1104">得分 &gt; 0 &rarr; Call（看涨）<br data-start="1083" data-end="1086" /> 得分 &lt; 0 &rarr; Put（看跌）</p>
+</blockquote>
+<hr data-start="1116" data-end="1119" />
+<h2 data-start="1121" data-end="1136"><strong data-start="1124" data-end="1136">🎯 盈亏规则类</strong></h2>
+<h3 data-start="1138" data-end="1172"><strong data-start="1142" data-end="1170">Q9：0.14 买进，涨到多少算 50% 收益？</strong></h3>
+<p data-start="1173" data-end="1203">涨到 0.21（+50%）<br data-start="1186" data-end="1189" /> 涨到 0.28（+100%）</p>
+<p data-start="1205" data-end="1213">推公式非常简单：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml">目标价=成本&times;(1+收益率)目标价 = 成本 &times; (1 + 收益率)</span><span class="katex-html"><span class="base"><span class="mord cjk_fallback">目标价</span><span class="mrel">=</span></span><span class="base"><span class="mord cjk_fallback">成本</span><span class="mbin">&times;</span></span><span class="base"><span class="mopen">(</span><span class="mord">1</span><span class="mbin">+</span></span><span class="base"><span class="mord cjk_fallback">收益率</span><span class="mclose">)</span></span></span></span></span></p>
+<hr data-start="1243" data-end="1246" />
+<h3 data-start="1248" data-end="1276"><strong data-start="1252" data-end="1276">Q10：到期日前涨到行权价就一定赚钱吗？</strong></h3>
+<p data-start="1277" data-end="1294">不一定，看你是否在上涨过程中卖出。</p>
+<p data-start="1296" data-end="1318">时间越接近到期 &rarr; 波动越大 &rarr; 风险越大。</p>
+<hr data-start="1320" data-end="1323" />
+<h3 data-start="1325" data-end="1349"><strong data-start="1329" data-end="1349">Q11：如果不卖，到期日会怎样？</strong></h3>
+<p data-start="1350" data-end="1368">如果到期日仍然低于行权价（709）：</p>
+<p data-start="1370" data-end="1391"><strong data-start="1370" data-end="1391">Call 期权价值 = 0（归零）</strong></p>
+<hr data-start="1393" data-end="1396" />
+<h3 data-start="1398" data-end="1428"><strong data-start="1402" data-end="1428">Q12：为什么 SPY 涨，你的期权反而跌？</strong></h3>
+<p data-start="1429" data-end="1434">三个可能：</p>
+<ol data-start="1436" data-end="1494">
+<li data-start="1436" data-end="1450">
+<p data-start="1439" data-end="1450">涨幅不够（弱上涨）</p>
+</li>
+<li data-start="1451" data-end="1473">
+<p data-start="1454" data-end="1473">时间价值今天扣得更多（Theta）</p>
+</li>
+<li data-start="1474" data-end="1494">
+<p data-start="1477" data-end="1494">隐含波动率 IV 下跌（影响价格）</p>
+</li>
+</ol>
+<hr data-start="1496" data-end="1499" />
+<h3 data-start="1501" data-end="1532"><strong data-start="1505" data-end="1532">Q13：是否可以同时买 Call 和 Put？</strong></h3>
+<p data-start="1533" data-end="1585">叫&ldquo;Straddle / Strangle&rdquo;，非常高级，需要更高的判断力。<br data-start="1570" data-end="1573" /> 目前不建议新手用，因为：</p>
+<ul data-start="1587" data-end="1614">
+<li data-start="1587" data-end="1604">
+<p data-start="1589" data-end="1604">两边都亏的概率远大于你想象</p>
+</li>
+<li data-start="1605" data-end="1614">
+<p data-start="1607" data-end="1614">时间价值双倍扣</p>
+</li>
+</ul>
+<hr data-start="1616" data-end="1619" />
+<h3 data-start="1621" data-end="1651"><strong data-start="1625" data-end="1651">Q14：为什么散户亏钱？我为什么能比他们强？</strong></h3>
+<p data-start="1652" data-end="1660">散户失败的三点：</p>
+<ol data-start="1662" data-end="1728">
+<li data-start="1662" data-end="1684">
+<p data-start="1665" data-end="1684"><strong data-start="1665" data-end="1682">无系统，不看数据，凭感觉买</strong></p>
+</li>
+<li data-start="1685" data-end="1708">
+<p data-start="1688" data-end="1708"><strong data-start="1688" data-end="1706">不懂 Theta（时间损耗）</strong></p>
+</li>
+<li data-start="1709" data-end="1728">
+<p data-start="1712" data-end="1728"><strong data-start="1712" data-end="1728">盯盘情绪化，导致过度交易</strong></p>
+</li>
+</ol>
+<p data-start="1730" data-end="1757">你走的是&ldquo;数据 + 系统化&rdquo;模式 &rarr; 压倒大部分散户。</p>
+<p>&nbsp;</p>
