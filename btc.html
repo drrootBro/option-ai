@@ -153,33 +153,31 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>AI Market Bias Dashboard</h1>
     <div class="subtitle">
-      手工输入 4 个数字 → 给出多空倾向（帮助你自己做决定，而不是替你下单）
+      手工输入 4 个数字 → 多空倾向立即显示（帮助你做决策，而不是替你下单）
     </div>
 
-    <!-- A. 快捷数据来源按钮 -->
+    <!-- A. 数据来源按钮 -->
     <section class="card">
       <h2>A. 快速打开数据网站</h2>
-      <p class="desc">每天先打开这些页面，抄数字到下面的输入框。</p>
+      <p class="desc">每天打开这些网站 → 抄数字到下面输入区。</p>
       <div class="links">
         <button onclick="openLink('https://www.coinglass.com/FundingRate')">Coinglass Funding Rate</button>
         <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT')">BTC Chart (Trend)</button>
         <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:ETHUSDT')">ETH Chart (Trend)</button>
         <button onclick="openLink('https://coinmarketcap.com/charts/')">BTC Dominance</button>
-        <button onclick="openLink('https://www.binance.com/en/price/bitcoin')">BTC Volume (Binance)</button>
-        <button onclick="openLink('https://www.binance.com/en/price/ethereum')">ETH Volume (Binance)</button>
+        <button onclick="openLink('https://www.binance.com/en/price/bitcoin')">BTC Volume</button>
+        <button onclick="openLink('https://www.binance.com/en/price/ethereum')">ETH Volume</button>
       </div>
     </section>
 
-    <!-- B. 数据输入区 -->
+    <!-- B. 输入区 -->
     <section class="card">
       <h2>B. 输入今日市场数据</h2>
-      <p class="desc">
-        先选资产（BTC/ETH），再填今天的几个关键数字。小白只需要填前 3 个，高级可以再加 Dominance。
-      </p>
 
       <label>Asset（标的）</label>
       <select id="asset">
@@ -190,207 +188,168 @@
       <div class="row">
         <div>
           <label>1. 今日价格涨跌（%）</label>
-          <input id="priceChange" type="number" step="0.01" placeholder="例如 +1.2 或 -0.8">
-          <small>从交易所或 TradingView 看 24h Change（百分比）。</small>
+          <input id="priceChange" type="number" step="0.01" placeholder="如 +1.2 或 -0.8">
         </div>
+
         <div>
           <label>2. Funding Rate（%）</label>
-          <input id="funding" type="number" step="0.0001" placeholder="例如 0.0074 或 -0.012">
-          <small>Coinglass 上 BTC/ETH 的 OI-weighted Funding 值，去掉 % 直接填数字。</small>
+          <input id="funding" type="number" step="0.0001" placeholder="如 0.0074 或 -0.013">
         </div>
       </div>
 
       <div class="row">
         <div>
           <label>3. 成交量变化（%）</label>
-          <input id="volChange" type="number" step="1" placeholder="例如 +20 或 -15">
-          <small>今天成交量相对昨天，大概多了 / 少了多少百分比（估算也可以）。</small>
+          <input id="volChange" type="number" step="1" placeholder="如 +20 或 -15">
         </div>
+
         <div>
-          <label>4. BTC Dominance 变化（百分点，可选）</label>
-          <input id="domChange" type="number" step="0.1" placeholder="例如 +1.5 或 -0.8">
-          <small>今天 BTC Dominance − 昨天 Dominance（CoinMarketCap 图表）。</small>
+          <label>4. BTC Dominance 变化（%）</label>
+          <input id="domChange" type="number" step="0.1" placeholder="如 +1.2 或 -0.5">
         </div>
       </div>
 
-      <button onclick="evaluate()">Evaluate（评估多空倾向）</button>
+      <button onclick="runEvaluation()">Evaluate（评估趋势倾向）</button>
 
       <div id="result" class="result-box">
-        填写上面的数字，然后点击「Evaluate」。
+        输入数据后点击 Evaluate。
       </div>
-
-      <div class="disclaimer">
-        提示：这是帮助你「理解市场结构」的工具，不是买卖指令。任何时候都要控制仓位和止损。
-      </div>
-    </section>
-
-    <!-- C. 评分含义说明 -->
-    <section class="card">
-      <h2>C. 评分与灯号如何解读？</h2>
-      <ul class="list">
-        <li><b>总分 ≥ 6</b>：系统强烈偏多 → 多头胜率相对更高，但要防止追高。</li>
-        <li><b>2 ≤ 总分 &lt; 6</b>：偏多 → 可小仓尝试多头。</li>
-        <li><b>-2 &lt; 总分 &lt; 2</b>：中性 / 震荡 → 一般不建议做方向性单。</li>
-        <li><b>-6 &lt; 总分 ≤ -2</b>：偏空 → 可小仓尝试空头或 Put。</li>
-        <li><b>总分 ≤ -6</b>：系统强烈偏空 → 空头胜率相对更高，但要防止杀跌在地板。</li>
-      </ul>
-      <p class="disclaimer">
-        正数方向偏多，负数方向偏空。这个分数不是「胜率百分比」，而是综合信号的强弱。
-      </p>
     </section>
   </div>
 
-  <script>
-    function openLink(url) {
-      window.open(url, "_blank");
+<script>
+function openLink(url) {
+  window.open(url, "_blank");
+}
+
+// ---------------------------
+// 修复后的主函数（可运行）
+// ---------------------------
+function runEvaluation() {
+  const asset = document.getElementById("asset").value;
+  const priceChange = Number(document.getElementById("priceChange").value || 0);
+  const funding = Number(document.getElementById("funding").value || 0);
+  const volChange = Number(document.getElementById("volChange").value || 0);
+  const domChange = Number(document.getElementById("domChange").value || 0);
+
+  let score = 0;
+  const reasonsBull = [];
+  const reasonsBear = [];
+
+  // --- 1. 价格趋势 ---
+  if (priceChange >= 1) {
+    score += 3;
+    reasonsBull.push(`价格上涨 ${priceChange}%，属于<strong>强上涨</strong>。`);
+  } else if (priceChange >= 0.5) {
+    score += 2;
+    reasonsBull.push(`价格上涨 ${priceChange}%，属于中等上涨。`);
+  } else if (priceChange > 0) {
+    score += 1;
+    reasonsBull.push(`价格小幅上涨 ${priceChange}%。`);
+  } else if (priceChange <= -1) {
+    score -= 3;
+    reasonsBear.push(`价格下跌 ${priceChange}%，属于<strong>强下跌</strong>。`);
+  } else if (priceChange <= -0.5) {
+    score -= 2;
+    reasonsBear.push(`价格下跌 ${priceChange}%，为中等下跌。`);
+  } else if (priceChange < 0) {
+    score -= 1;
+    reasonsBear.push(`价格小幅下跌 ${priceChange}%。`);
+  }
+
+  // --- 2. Funding Rate ---
+  if (funding > 0.02) {
+    score -= 1;
+    reasonsBear.push(`Funding ${funding}%，多头过热 → 回调风险。`);
+  } else if (funding > 0) {
+    score += 1;
+    reasonsBull.push(`Funding ${funding}%，多头占优。`);
+  } else if (funding < -0.02) {
+    score += 1;
+    reasonsBull.push(`Funding ${funding}%，空头过热 → 可能反弹。`);
+  } else if (funding < 0) {
+    score -= 1;
+    reasonsBear.push(`Funding ${funding}%，偏空情绪。`);
+  }
+
+  // --- 3. 成交量变化 ---
+  if (priceChange > 0 && volChange > 0) {
+    score += 1;
+    reasonsBull.push(`成交量增加 ${volChange}% → 上涨更可信。`);
+  } else if (priceChange > 0 && volChange < 0) {
+    score -= 1;
+    reasonsBear.push(`上涨但缩量（-${Math.abs(volChange)}%）→ 可能是假涨。`);
+  } else if (priceChange < 0 && volChange > 0) {
+    score -= 1;
+    reasonsBear.push(`下跌放量（+${volChange}%）→ 真实抛压。`);
+  } else if (priceChange < 0 && volChange < 0) {
+    score += 0.5;
+    reasonsBull.push(`下跌缩量 → 空头力度不足。`);
+  }
+
+  // --- 4. BTC Dominance ---
+  if (domChange !== 0) {
+    if (asset === "BTC") {
+      if (domChange > 0) {
+        score += 1;
+        reasonsBull.push(`BTC Dominance 上升 ${domChange} → 资金回流 BTC。`);
+      } else {
+        score -= 1;
+        reasonsBear.push(`BTC Dominance 下降 ${Math.abs(domChange)} → 资金流向山寨。`);
+      }
+    } else if (asset === "ETH") {
+      if (domChange < 0) {
+        score += 1;
+        reasonsBull.push(`资金更偏向主流山寨，对 ETH 有利。`);
+      } else {
+        score -= 1;
+        reasonsBear.push(`BTC 更强势，ETH 相对承压。`);
+      }
     }
+  }
 
-    function evaluate() {
-      const asset = document.getElementById("asset").value;
-      const priceChange = Number(document.getElementById("priceChange").value || 0);
-      const funding = Number(document.getElementById("funding").value || 0);
-      const volChange = Number(document.getElementById("volChange").value || 0);
-      const domChange = Number(document.getElementById("domChange").value || 0);
+  // --- 输出灯号 ---
+  let biasText = "";
+  let light = "";
+  let pill = "";
 
-      let score = 0;
-      const reasonsBull = [];
-      const reasonsBear = [];
+  if (score >= 6) {
+    light = "light-green";
+    pill = "pill-bull";
+    biasText = "系统强烈偏多（胜率倾向明显偏向 Call）";
+  } else if (score >= 2) {
+    light = "light-green";
+    pill = "pill-bull";
+    biasText = "系统偏多（可小仓尝试 Call）";
+  } else if (score <= -6) {
+    light = "light-red";
+    pill = "pill-bear";
+    biasText = "系统强烈偏空（Put 胜率高，但注意极端行情反转）";
+  } else if (score <= -2) {
+    light = "light-red";
+    pill = "pill-bear";
+    biasText = "系统偏空（可小仓尝试 Put）";
+  } else {
+    light = "light-yellow";
+    pill = "pill-neutral";
+    biasText = "中性行情 → 不建议做方向性单";
+  }
 
-      // 1. 价格趋势（最重要）
-      if (priceChange >= 1) {
-        score += 3;
-        reasonsBull.push(`价格上涨 ${priceChange.toFixed(2)}%，属于<strong>强上涨</strong>。`);
-      } else if (priceChange >= 0.5) {
-        score += 2;
-        reasonsBull.push(`价格上涨 ${priceChange.toFixed(2)}%，属于<strong>中等上涨</strong>。`);
-      } else if (priceChange > 0) {
-        score += 1;
-        reasonsBull.push(`价格微涨 ${priceChange.toFixed(2)}%，但力度一般。`);
-      } else if (priceChange <= -1) {
-        score -= 3;
-        reasonsBear.push(`价格下跌 ${priceChange.toFixed(2)}%，属于<strong>强下跌</strong>。`);
-      } else if (priceChange <= -0.5) {
-        score -= 2;
-        reasonsBear.push(`价格下跌 ${priceChange.toFixed(2)}%，属于<strong>中等下跌</strong>。`);
-      } else if (priceChange < 0) {
-        score -= 1;
-        reasonsBear.push(`价格微跌 ${priceChange.toFixed(2)}%，但力度一般。`);
-      } else {
-        reasonsBear.push(`价格几乎不变，方向性不强。`);
-      }
+  // --- 渲染结果 ---
+  document.getElementById("result").innerHTML = `
+    <div class="score-line">
+      <span>资产：<strong>${asset}</strong></span>
+      <span>总分：<strong>${score.toFixed(1)}</strong></span>
+      <span class="pill ${pill}">
+        <span class="light ${light}"></span> &nbsp;${biasText}
+      </span>
+    </div>
 
-      // 2. Funding Rate（情绪）
-      if (funding > 0.02) {
-        // 多头过热，反而加一点空头权重
-        score -= 1;
-        reasonsBear.push(`Funding ${funding.toFixed(4)}%，多头过于拥挤，存在回调风险。`);
-      } else if (funding > 0.0) {
-        score += 1;
-        reasonsBull.push(`Funding ${funding.toFixed(4)}%，多头占优但不过热。`);
-      } else if (funding < -0.02) {
-        score += 1;
-        reasonsBull.push(`Funding ${funding.toFixed(4)}%，空头过于拥挤，存在<strong>空头挤爆</strong>可能。`);
-      } else if (funding < 0.0) {
-        score -= 1;
-        reasonsBear.push(`Funding ${funding.toFixed(4)}%，偏空情绪略占上风。`);
-      } else {
-        // 近似 0
-        // 不加分
-      }
+    ${reasonsBull.length ? "<ul class='list'><strong>偏多原因：</strong>" + reasonsBull.map(r => `<li>${r}</li>`).join("") + "</ul>" : ""}
+    ${reasonsBear.length ? "<ul class='list'><strong>偏空原因：</strong>" + reasonsBear.map(r => `<li>${r}</li>`).join("") + "</ul>" : ""}
+  `;
+}
+</script>
 
-      // 3. 成交量变化（确认或质疑趋势）
-      if (priceChange > 0 && volChange > 0) {
-        score += 1;
-        reasonsBull.push(`成交量较昨日增加 ${volChange.toFixed(0)}%，为上涨提供了确认。`);
-      } else if (priceChange > 0 && volChange < 0) {
-        score -= 1;
-        reasonsBear.push(`价格上涨但成交量减少 ${Math.abs(volChange).toFixed(0)}%，上涨可能不稳。`);
-      } else if (priceChange < 0 && volChange > 0) {
-        score -= 1;
-        reasonsBear.push(`价格下跌且成交量增加 ${volChange.toFixed(0)}%，抛压更真实。`);
-      } else if (priceChange < 0 && volChange < 0) {
-        score += 0.5;
-        reasonsBull.push(`价格下跌但成交量减少 ${Math.abs(volChange).toFixed(0)}%，下跌力度有限。`);
-      }
-
-      // 4. BTC Dominance 变化（可选）
-      if (domChange !== 0) {
-        if (asset === "BTC") {
-          if (domChange > 0) {
-            score += 1;
-            reasonsBull.push(`BTC Dominance 上升 ${domChange.toFixed(1)} 个百分点，资金回流 BTC。`);
-          } else if (domChange < 0) {
-            score -= 1;
-            reasonsBear.push(`BTC Dominance 下降 ${Math.abs(domChange).toFixed(1)} 个百分点，风险偏好转向山寨。`);
-          }
-        } else if (asset === "ETH") {
-          if (domChange > 0) {
-            score -= 1;
-            reasonsBear.push(`BTC Dominance 上升 ${domChange.toFixed(1)} 个百分点，资金偏向 BTC，ETH 相对承压。`);
-          } else if (domChange < 0) {
-            score += 1;
-            reasonsBull.push(`BTC Dominance 下降 ${Math.abs(domChange).toFixed(1)} 个百分点，资金更偏向主流山寨（对 ETH 有利）。`);
-          }
-        }
-      }
-
-      // 灯号判断
-      let lightClass = "light-yellow";
-      let biasText = "观望 / 震荡区间";
-      let pillClass = "pill-neutral";
-
-      if (score >= 6) {
-        lightClass = "light-green";
-        biasText = "系统强烈偏多（多头倾向更强，但仍需控制风险）";
-        pillClass = "pill-bull";
-      } else if (score >= 2) {
-        lightClass = "light-green";
-        biasText = "系统偏多（小仓位可以考虑多头方向）";
-        pillClass = "pill-bull";
-      } else if (score <= -6) {
-        lightClass = "light-red";
-        biasText = "系统强烈偏空（空头倾向更强，谨防恐慌杀跌）";
-        pillClass = "pill-bear";
-      } else if (score <= -2) {
-        lightClass = "light-red";
-        biasText = "系统偏空（小仓位可以考虑空头 / 对冲）";
-        pillClass = "pill-bear";
-      } else {
-        lightClass = "light-yellow";
-        biasText = "多空力量接近，建议以观望为主。";
-        pillClass = "pill-neutral";
-      }
-
-      const resultDiv = document.getElementById("result");
-      const bullList = reasonsBull.length
-        ? "<ul class='list'><li><strong>偏多因素：</strong></li>" +
-          reasonsBull.map(r => "<li>" + r + "</li>").join("") +
-          "</ul>"
-        : "";
-      const bearList = reasonsBear.length
-        ? "<ul class='list'><li><strong>偏空因素：</strong></li>" +
-          reasonsBear.map(r => "<li>" + r + "</li>").join("") +
-          "</ul>"
-        : "";
-
-      resultDiv.innerHTML = `
-        <div class="score-line">
-          <span>资产：<strong>${asset}</strong></span>
-          <span>总分：<strong>${score.toFixed(1)}</strong></span>
-          <span class="pill ${pillClass}">
-            <span class="light ${lightClass}"></span>
-            &nbsp;${biasText}
-          </span>
-        </div>
-        ${bullList}
-        ${bearList}
-        <div class="disclaimer">
-          说明：系统只是帮你把分散的信息整理成「偏多 / 偏空」的概率倾向，<br>
-          不会替你决定买 Call / Put。最终下单前，你仍然要问自己三件事：<br>
-          1）仓位是不是足够小？ 2）止损在哪里？ 3）如果完全错了，我能不能接受？
-        </div>
-      `;
-    }
-  </script>
 </body>
 </html>
