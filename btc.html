@@ -2,86 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Crypto AI Assistant – BTC / ETH</title>
+  <title>AI Market Bias Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root {
-      --bg: #0b1220;
-      --card-bg: #111827;
-      --accent: #3b82f6;
-      --accent-soft: #1d4ed8;
-      --text: #e5e7eb;
-      --subtext: #9ca3af;
-      --danger: #f97373;
-      --success: #4ade80;
-    }
-    * { box-sizing: border-box; }
     body {
-      margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
-      color: var(--text);
+      margin: 0;
       padding: 16px;
+      background: #0b1220;
+      color: #e5e7eb;
     }
     h1 {
       text-align: center;
-      margin-top: 8px;
-      margin-bottom: 4px;
-      font-size: 1.6rem;
+      margin: 8px 0 4px;
+      font-size: 1.4rem;
     }
     .subtitle {
       text-align: center;
-      color: var(--subtext);
-      font-size: 0.9rem;
-      margin-bottom: 18px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
     }
     .container {
       max-width: 900px;
-      margin: 0 auto 40px auto;
+      margin: 0 auto 32px;
     }
     .card {
-      background: radial-gradient(circle at top left, rgba(59,130,246,0.15), rgba(15,23,42,0.98));
-      border-radius: 14px;
-      padding: 18px 16px;
-      margin-bottom: 18px;
-      border: 1px solid rgba(148,163,184,0.25);
-      box-shadow: 0 16px 40px rgba(15,23,42,0.75);
+      background: #020617;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid #1f2937;
     }
     .card h2 {
-      margin-top: 2px;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
+      margin: 0 0 6px;
+      font-size: 1.05rem;
     }
     .card p.desc {
-      margin-top: 0;
-      margin-bottom: 12px;
-      color: var(--subtext);
+      margin: 0 0 10px;
       font-size: 0.85rem;
+      color: #9ca3af;
     }
     label {
       display: block;
       font-size: 0.85rem;
       margin-top: 8px;
-      margin-bottom: 4px;
-      color: var(--subtext);
+      margin-bottom: 2px;
     }
-    input, select, textarea {
+    input, select {
       width: 100%;
       padding: 8px 10px;
       border-radius: 8px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: rgba(15,23,42,0.9);
-      color: var(--text);
+      border: 1px solid #334155;
+      background: #020617;
+      color: #e5e7eb;
       font-size: 0.9rem;
       outline: none;
     }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
+    input:focus, select:focus {
+      border-color: #3b82f6;
       box-shadow: 0 0 0 1px rgba(59,130,246,0.5);
     }
-    textarea {
-      min-height: 60px;
-      resize: vertical;
+    small {
+      font-size: 0.75rem;
+      color: #9ca3af;
     }
     button {
       width: 100%;
@@ -89,8 +73,8 @@
       padding: 10px 14px;
       border-radius: 999px;
       border: none;
-      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
-      color: white;
+      background: #3b82f6;
+      color: #fff;
       font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
@@ -98,502 +82,315 @@
     button:hover {
       filter: brightness(1.05);
     }
-
     .row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
     }
-    .row > * {
-      flex: 1 1 160px;
+    .row > div {
+      flex: 1 1 180px;
     }
-
-    .pill-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .pill-row button {
-      flex: 1 1 120px;
-      padding: 8px 10px;
-      margin-top: 0;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.6);
-      color: var(--subtext);
-    }
-    .pill-row button:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-
-    .asset-switch {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 10px;
-      gap: 8px;
-    }
-    .asset-switch button {
-      width: auto;
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.6);
-      color: var(--subtext);
-    }
-    .asset-switch button.active {
-      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
-      color: white;
-      border-color: transparent;
-    }
-
     .result-box {
       margin-top: 10px;
       padding: 10px 12px;
       border-radius: 10px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: rgba(15,23,42,0.9);
+      border: 1px solid #1f2937;
+      background: #020617;
       font-size: 0.9rem;
     }
     .score-line {
       font-weight: 600;
       margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .tag {
+    .pill {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 999px;
       font-size: 0.75rem;
-      margin-left: 4px;
     }
-    .tag-bull { background: rgba(34,197,94,0.15); color: #4ade80; }
-    .tag-bear { background: rgba(239,68,68,0.15); color: #f87171; }
-    .tag-neutral { background: rgba(148,163,184,0.2); color: #e5e7eb; }
-
-    .trade-list {
-      list-style: none;
-      padding-left: 0;
-      margin-top: 10px;
+    .pill-bull { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .pill-bear { background: rgba(248,113,113,0.15); color: #fca5a5; }
+    .pill-neutral { background: rgba(148,163,184,0.25); color: #e5e7eb; }
+    .light {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .light-green { background: #22c55e; }
+    .light-yellow { background: #eab308; }
+    .light-red { background: #ef4444; }
+    .list {
       font-size: 0.85rem;
-      max-height: 220px;
-      overflow-y: auto;
+      color: #e5e7eb;
     }
-    .trade-list li {
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(55,65,81,0.7);
-      margin-bottom: 6px;
+    .list li {
+      margin-bottom: 4px;
     }
-    .trade-list span.asset {
-      font-weight: 600;
-      margin-right: 4px;
-      color: #93c5fd;
-    }
-    .trade-list span.side-long { color: #4ade80; }
-    .trade-list span.side-short { color: #f87171; }
-
-    details {
-      margin-bottom: 8px;
-    }
-    summary {
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: var(--text);
-    }
-    .faq-body {
-      font-size: 0.85rem;
-      color: var(--subtext);
-      margin-top: 4px;
-    }
-
     .disclaimer {
       font-size: 0.75rem;
-      color: var(--subtext);
+      color: #9ca3af;
       margin-top: 6px;
+    }
+    .links button {
+      width: auto;
+      margin-top: 4px;
+      margin-right: 4px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #374151;
+      color: #9ca3af;
+    }
+    .links button:hover {
+      border-color: #3b82f6;
+      color: #e5e7eb;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Crypto AI Assistant</h1>
+    <h1>AI Market Bias Dashboard</h1>
     <div class="subtitle">
-      BTC / ETH方向评估 & 个人交易笔记（学习用途，不构成投资建议）
+      手工输入 4 个数字 → 给出多空倾向（帮助你自己做决定，而不是替你下单）
     </div>
 
-    <!-- 资产切换 -->
-    <div class="asset-switch">
-      <button id="btnBTC" class="active" onclick="setAsset('BTC')">BTC</button>
-      <button id="btnETH" onclick="setAsset('ETH')">ETH</button>
-    </div>
-
-    <!-- 1. 市场数据输入 -->
+    <!-- A. 快捷数据来源按钮 -->
     <section class="card">
-    <h2>🌐 Market Data Quick Links</h2>
-  
-    <button onclick="openLink('https://alternative.me/crypto/fear-and-greed-index/')">
-      Crypto Fear & Greed Index
-    </button>
-  
-    <button onclick="openLink('https://www.coinglass.com/futures')">
-      Funding Rate (Coinglass)
-    </button>
-  
-    <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT')">
-      BTC Chart (Trend)
-    </button>
-  
-    <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:ETHUSDT')">
-      ETH Chart (Trend)
-    </button>
-  
-    <button onclick="openLink('https://www.tradingview.com/chart/?symbol=CRYPTOCAP:BTC.D')">
-      BTC Dominance
-    </button>
-  
-    <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:ETHBTC')">
-      ETH/BTC Relative Strength
-    </button>
-  
-    <button onclick="openLink('https://cryptopanic.com/')">
-      News: CryptoPanic
-    </button>
-  </section>
+      <h2>A. 快速打开数据网站</h2>
+      <p class="desc">每天先打开这些页面，抄数字到下面的输入框。</p>
+      <div class="links">
+        <button onclick="openLink('https://www.coinglass.com/FundingRate')">Coinglass Funding Rate</button>
+        <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT')">BTC Chart (Trend)</button>
+        <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:ETHUSDT')">ETH Chart (Trend)</button>
+        <button onclick="openLink('https://coinmarketcap.com/charts/')">BTC Dominance</button>
+        <button onclick="openLink('https://www.binance.com/en/price/bitcoin')">BTC Volume (Binance)</button>
+        <button onclick="openLink('https://www.binance.com/en/price/ethereum')">ETH Volume (Binance)</button>
+      </div>
+    </section>
 
+    <!-- B. 数据输入区 -->
     <section class="card">
-      <h2>① Market Data</h2>
-      <p class="desc" id="assetDesc">
-        Current asset: <b>BTC</b>. Fill in the fields below based on the suggested data sources.
+      <h2>B. 输入今日市场数据</h2>
+      <p class="desc">
+        先选资产（BTC/ETH），再填今天的几个关键数字。小白只需要填前 3 个，高级可以再加 Dominance。
       </p>
 
-      <div class="pill-row">
-        <button onclick="openLink('https://alternative.me/crypto/fear-and-greed-index/')">Crypto Fear &amp; Greed Index</button>
-        <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT')">BTCUSDT Chart</button>
-        <button onclick="openLink('https://www.tradingview.com/chart/?symbol=BINANCE:ETHUSDT')">ETHUSDT Chart</button>
-        <button onclick="openLink('https://www.coinglass.com/')" title="Funding / OI / Liquidations">
-          Funding &amp; OI (Coinglass)
-        </button>
+      <label>Asset（标的）</label>
+      <select id="asset">
+        <option value="BTC">BTC</option>
+        <option value="ETH">ETH</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>1. 今日价格涨跌（%）</label>
+          <input id="priceChange" type="number" step="0.01" placeholder="例如 +1.2 或 -0.8">
+          <small>从交易所或 TradingView 看 24h Change（百分比）。</small>
+        </div>
+        <div>
+          <label>2. Funding Rate（%）</label>
+          <input id="funding" type="number" step="0.0001" placeholder="例如 0.0074 或 -0.012">
+          <small>Coinglass 上 BTC/ETH 的 OI-weighted Funding 值，去掉 % 直接填数字。</small>
+        </div>
       </div>
 
       <div class="row">
         <div>
-          <label>Crypto Fear &amp; Greed Index</label>
-          <input id="fg" type="number" placeholder="0 - 100, e.g. 36" />
+          <label>3. 成交量变化（%）</label>
+          <input id="volChange" type="number" step="1" placeholder="例如 +20 或 -15">
+          <small>今天成交量相对昨天，大概多了 / 少了多少百分比（估算也可以）。</small>
         </div>
         <div>
-          <label>Funding Rate (% / 8h)</label>
-          <input id="funding" type="number" step="0.001" placeholder="e.g. 0.01 or -0.02" />
+          <label>4. BTC Dominance 变化（百分点，可选）</label>
+          <input id="domChange" type="number" step="0.1" placeholder="例如 +1.5 或 -0.8">
+          <small>今天 BTC Dominance − 昨天 Dominance（CoinMarketCap 图表）。</small>
         </div>
       </div>
 
-      <div class="row">
-        <div>
-          <label>Trend strength (−3 to +3)</label>
-          <input id="trend" type="number" min="-3" max="3" step="1" placeholder="e.g. 1" />
-        </div>
-        <div id="relBox">
-          <label id="relLabel">BTC dominance / key relative metric</label>
-          <input id="relMetric" type="number" step="0.1" placeholder="BTC dom %, e.g. 52" />
-        </div>
-      </div>
-
-      <label>News & sentiment (−3 to +3)</label>
-      <input id="newsSentiment" type="number" min="-3" max="3" step="1" placeholder="e.g. 0 (no strong news)" />
-
-      <button onclick="calculateScore()">Calculate signal</button>
+      <button onclick="evaluate()">Evaluate（评估多空倾向）</button>
 
       <div id="result" class="result-box">
-        Fill the data and click “Calculate signal”.
+        填写上面的数字，然后点击「Evaluate」。
       </div>
+
       <div class="disclaimer">
-        Score = 简化版情绪 + 资金费率 + 趋势 + 相对强弱，只用于方向训练，不是买卖指令。
+        提示：这是帮助你「理解市场结构」的工具，不是买卖指令。任何时候都要控制仓位和止损。
       </div>
     </section>
 
-    <!-- 2. 交易记录（本机私有） -->
+    <!-- C. 评分含义说明 -->
     <section class="card">
-      <h2>② My Trades (Private)</h2>
-      <p class="desc">
-        Trades are stored only in your browser (localStorage). Nobody else can see them, even on the same URL.
-      </p>
-
-      <div class="row">
-        <div>
-          <label>Side</label>
-          <select id="side">
-            <option value="LONG">LONG (看多)</option>
-            <option value="SHORT">SHORT (看空)</option>
-          </select>
-        </div>
-        <div>
-          <label>Entry price</label>
-          <input id="entry" type="number" step="0.01" placeholder="e.g. 42000" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Position size (optional)</label>
-          <input id="size" type="number" step="0.0001" placeholder="e.g. 0.05 BTC" />
-        </div>
-        <div>
-          <label>Target / stop idea (optional)</label>
-          <input id="target" type="text" placeholder="e.g. TP: +5%, SL: −3%" />
-        </div>
-      </div>
-
-      <label>Notes</label>
-      <textarea id="notes" placeholder="Why did you take this trade? What did the signal say?"></textarea>
-
-      <button onclick="addTrade()">Save trade</button>
-
-      <ul id="tradeList" class="trade-list"></ul>
-    </section>
-
-    <!-- 3. FAQ -->
-    <section class="card">
-      <h2>③ FAQ – How to use this tool</h2>
-
-      <details open>
-        <summary>Is this giving me buy/sell signals?</summary>
-        <div class="faq-body">
-          No. It gives a <b>directional bias score</b> based on a few simple inputs (Fear &amp; Greed, funding, trend, relative strength, news).
-          It is for training &amp; journaling, not financial advice.
-        </div>
-      </details>
-
-      <details>
-        <summary>Why separate BTC and ETH models?</summary>
-        <div class="faq-body">
-          BTC is more macro / liquidity driven, ETH is more relative-strength / ecosystem driven.
-          They respond differently to the same market conditions, so they use slightly different weights.
-        </div>
-      </details>
-
-      <details>
-        <summary>What does the score roughly mean?</summary>
-        <div class="faq-body">
-          <ul>
-            <li><b>Score ≥ +5</b>: strong bullish bias → only consider LONGs, be strict with risk.</li>
-            <li><b>+1 to +4</b>: mild bullish → small LONGs or scale-in.</li>
-            <li><b>-1 to -4</b>: mild bearish → small SHORTs or hedges.</li>
-            <li><b>≤ -5</b>: strong bearish → only consider SHORTs, strict risk.</li>
-            <li><b>≈ 0</b>: noisy / chop → often best to stay flat.</li>
-          </ul>
-        </div>
-      </details>
-
-      <details>
-        <summary>What is funding rate and why does it matter?</summary>
-        <div class="faq-body">
-          Funding is the fee between longs and shorts in perpetual futures. Positive funding means longs pay shorts
-          (market is leaning bullish). Negative funding means shorts pay longs (leaning bearish or crowded shorts).
-          Extreme funding often means crowded positioning and higher risk of squeeze.
-        </div>
-      </details>
-
-      <details>
-        <summary>Why store trades locally instead of on a server?</summary>
-        <div class="faq-body">
-          To keep your trades <b>private</b>. Everything is stored only in your browser (localStorage).
-          Clearing browser data will remove them; otherwise no one else, including the website owner, sees them.
-        </div>
-      </details>
-
-      <details>
-        <summary>Can this model be used for other coins?</summary>
-        <div class="faq-body">
-          Not directly. BTC / ETH are large, relatively liquid assets. Smaller altcoins are more narrative/illiquidity driven.
-          You can still journal alt trades here, but the score logic is tuned for BTC &amp; ETH.
-        </div>
-      </details>
-
+      <h2>C. 评分与灯号如何解读？</h2>
+      <ul class="list">
+        <li><b>总分 ≥ 6</b>：系统强烈偏多 → 多头胜率相对更高，但要防止追高。</li>
+        <li><b>2 ≤ 总分 &lt; 6</b>：偏多 → 可小仓尝试多头。</li>
+        <li><b>-2 &lt; 总分 &lt; 2</b>：中性 / 震荡 → 一般不建议做方向性单。</li>
+        <li><b>-6 &lt; 总分 ≤ -2</b>：偏空 → 可小仓尝试空头或 Put。</li>
+        <li><b>总分 ≤ -6</b>：系统强烈偏空 → 空头胜率相对更高，但要防止杀跌在地板。</li>
+      </ul>
       <p class="disclaimer">
-        This tool is for education and self-discipline training. It does not consider your personal situation,
-        leverage, liquidation, or exchange risk. Always use tiny size while learning.
+        正数方向偏多，负数方向偏空。这个分数不是「胜率百分比」，而是综合信号的强弱。
       </p>
     </section>
   </div>
 
   <script>
-    let currentAsset = "BTC";
-    const btnBTC = document.getElementById("btnBTC");
-    const btnETH = document.getElementById("btnETH");
-    const assetDesc = document.getElementById("assetDesc");
-    const relLabel = document.getElementById("relLabel");
-    const relMetricInput = document.getElementById("relMetric");
-    const resultBox = document.getElementById("result");
-    const tradeListEl = document.getElementById("tradeList");
-
-    // ---- asset switching ----
-    function setAsset(asset) {
-      currentAsset = asset;
-      if (asset === "BTC") {
-        btnBTC.classList.add("active");
-        btnETH.classList.remove("active");
-        assetDesc.innerHTML = 'Current asset: <b>BTC</b>. Focus on global crypto risk sentiment and BTC dominance.';
-        relLabel.textContent = "BTC dominance (%)";
-        relMetricInput.placeholder = "e.g. 52";
-      } else {
-        btnETH.classList.remove("active");
-        btnETH.classList.add("active");
-        btnBTC.classList.remove("active");
-        assetDesc.innerHTML = 'Current asset: <b>ETH</b>. Focus on ETH vs BTC relative strength and L2 / ecosystem activity.';
-        relLabel.textContent = "ETH/BTC relative strength (−3 to +3)";
-        relMetricInput.placeholder = "e.g. 1 (ETH stronger than BTC)";
-      }
-      renderTrades();
-    }
-
     function openLink(url) {
       window.open(url, "_blank");
     }
 
-    // ---- scoring logic ----
-    function calculateScore() {
-      const fg = Number(document.getElementById("fg").value || 0);
+    function evaluate() {
+      const asset = document.getElementById("asset").value;
+      const priceChange = Number(document.getElementById("priceChange").value || 0);
       const funding = Number(document.getElementById("funding").value || 0);
-      const trend = Number(document.getElementById("trend").value || 0);
-      const relMetric = Number(document.getElementById("relMetric").value || 0);
-      const newsSentiment = Number(document.getElementById("newsSentiment").value || 0);
+      const volChange = Number(document.getElementById("volChange").value || 0);
+      const domChange = Number(document.getElementById("domChange").value || 0);
 
       let score = 0;
-      let lines = [];
+      const reasonsBull = [];
+      const reasonsBear = [];
 
-      // Crypto Fear & Greed (common)
-      if (fg > 60) { score += 2; lines.push("Fear & Greed > 60 → +2 (risk-on)"); }
-      else if (fg < 30) { score -= 2; lines.push("Fear & Greed < 30 → -2 (fear)"); }
-      else { lines.push("Fear & Greed in neutral zone (no strong impact)"); }
-
-      // Funding
-      if (funding > 0.03) {
+      // 1. 价格趋势（最重要）
+      if (priceChange >= 1) {
+        score += 3;
+        reasonsBull.push(`价格上涨 ${priceChange.toFixed(2)}%，属于<strong>强上涨</strong>。`);
+      } else if (priceChange >= 0.5) {
+        score += 2;
+        reasonsBull.push(`价格上涨 ${priceChange.toFixed(2)}%，属于<strong>中等上涨</strong>。`);
+      } else if (priceChange > 0) {
         score += 1;
-        lines.push("High positive funding → +1 (bullish but crowded longs)");
-      } else if (funding > 0.0) {
-        score += 0.5;
-        lines.push("Mild positive funding → +0.5 (healthy bullish tilt)");
-      } else if (funding < -0.03) {
+        reasonsBull.push(`价格微涨 ${priceChange.toFixed(2)}%，但力度一般。`);
+      } else if (priceChange <= -1) {
+        score -= 3;
+        reasonsBear.push(`价格下跌 ${priceChange.toFixed(2)}%，属于<strong>强下跌</strong>。`);
+      } else if (priceChange <= -0.5) {
+        score -= 2;
+        reasonsBear.push(`价格下跌 ${priceChange.toFixed(2)}%，属于<strong>中等下跌</strong>。`);
+      } else if (priceChange < 0) {
         score -= 1;
-        lines.push("High negative funding → -1 (crowded shorts, risk of squeeze)");
+        reasonsBear.push(`价格微跌 ${priceChange.toFixed(2)}%，但力度一般。`);
+      } else {
+        reasonsBear.push(`价格几乎不变，方向性不强。`);
+      }
+
+      // 2. Funding Rate（情绪）
+      if (funding > 0.02) {
+        // 多头过热，反而加一点空头权重
+        score -= 1;
+        reasonsBear.push(`Funding ${funding.toFixed(4)}%，多头过于拥挤，存在回调风险。`);
+      } else if (funding > 0.0) {
+        score += 1;
+        reasonsBull.push(`Funding ${funding.toFixed(4)}%，多头占优但不过热。`);
+      } else if (funding < -0.02) {
+        score += 1;
+        reasonsBull.push(`Funding ${funding.toFixed(4)}%，空头过于拥挤，存在<strong>空头挤爆</strong>可能。`);
       } else if (funding < 0.0) {
-        score -= 0.5;
-        lines.push("Mild negative funding → -0.5 (slight bearish tilt)");
+        score -= 1;
+        reasonsBear.push(`Funding ${funding.toFixed(4)}%，偏空情绪略占上风。`);
       } else {
-        lines.push("Funding near 0 → neutral");
+        // 近似 0
+        // 不加分
       }
 
-      // Asset-specific parts
-      if (currentAsset === "BTC") {
-        // BTC dominance: higher dom often means BTC leading, safer beta
-        if (relMetric > 50) { score += 1; lines.push("BTC dominance > 50% → +1 (BTC leading the market)"); }
-        else if (relMetric < 40) { score -= 1; lines.push("BTC dominance < 40% → -1 (alts leading, BTC weaker)"); }
+      // 3. 成交量变化（确认或质疑趋势）
+      if (priceChange > 0 && volChange > 0) {
+        score += 1;
+        reasonsBull.push(`成交量较昨日增加 ${volChange.toFixed(0)}%，为上涨提供了确认。`);
+      } else if (priceChange > 0 && volChange < 0) {
+        score -= 1;
+        reasonsBear.push(`价格上涨但成交量减少 ${Math.abs(volChange).toFixed(0)}%，上涨可能不稳。`);
+      } else if (priceChange < 0 && volChange > 0) {
+        score -= 1;
+        reasonsBear.push(`价格下跌且成交量增加 ${volChange.toFixed(0)}%，抛压更真实。`);
+      } else if (priceChange < 0 && volChange < 0) {
+        score += 0.5;
+        reasonsBull.push(`价格下跌但成交量减少 ${Math.abs(volChange).toFixed(0)}%，下跌力度有限。`);
+      }
+
+      // 4. BTC Dominance 变化（可选）
+      if (domChange !== 0) {
+        if (asset === "BTC") {
+          if (domChange > 0) {
+            score += 1;
+            reasonsBull.push(`BTC Dominance 上升 ${domChange.toFixed(1)} 个百分点，资金回流 BTC。`);
+          } else if (domChange < 0) {
+            score -= 1;
+            reasonsBear.push(`BTC Dominance 下降 ${Math.abs(domChange).toFixed(1)} 个百分点，风险偏好转向山寨。`);
+          }
+        } else if (asset === "ETH") {
+          if (domChange > 0) {
+            score -= 1;
+            reasonsBear.push(`BTC Dominance 上升 ${domChange.toFixed(1)} 个百分点，资金偏向 BTC，ETH 相对承压。`);
+          } else if (domChange < 0) {
+            score += 1;
+            reasonsBull.push(`BTC Dominance 下降 ${Math.abs(domChange).toFixed(1)} 个百分点，资金更偏向主流山寨（对 ETH 有利）。`);
+          }
+        }
+      }
+
+      // 灯号判断
+      let lightClass = "light-yellow";
+      let biasText = "观望 / 震荡区间";
+      let pillClass = "pill-neutral";
+
+      if (score >= 6) {
+        lightClass = "light-green";
+        biasText = "系统强烈偏多（多头倾向更强，但仍需控制风险）";
+        pillClass = "pill-bull";
+      } else if (score >= 2) {
+        lightClass = "light-green";
+        biasText = "系统偏多（小仓位可以考虑多头方向）";
+        pillClass = "pill-bull";
+      } else if (score <= -6) {
+        lightClass = "light-red";
+        biasText = "系统强烈偏空（空头倾向更强，谨防恐慌杀跌）";
+        pillClass = "pill-bear";
+      } else if (score <= -2) {
+        lightClass = "light-red";
+        biasText = "系统偏空（小仓位可以考虑空头 / 对冲）";
+        pillClass = "pill-bear";
       } else {
-        // ETH relative to BTC: input as -3..+3
-        score += relMetric;
-        lines.push("ETH/BTC relative strength contributed: " + relMetric.toFixed(1));
+        lightClass = "light-yellow";
+        biasText = "多空力量接近，建议以观望为主。";
+        pillClass = "pill-neutral";
       }
 
-      // Trend
-      score += trend;
-      lines.push("Trend contribution: " + trend.toFixed(1));
+      const resultDiv = document.getElementById("result");
+      const bullList = reasonsBull.length
+        ? "<ul class='list'><li><strong>偏多因素：</strong></li>" +
+          reasonsBull.map(r => "<li>" + r + "</li>").join("") +
+          "</ul>"
+        : "";
+      const bearList = reasonsBear.length
+        ? "<ul class='list'><li><strong>偏空因素：</strong></li>" +
+          reasonsBear.map(r => "<li>" + r + "</li>").join("") +
+          "</ul>"
+        : "";
 
-      // News sentiment
-      score += newsSentiment;
-      lines.push("News / narrative contribution: " + newsSentiment.toFixed(1));
-
-      // Build conclusion
-      let tagClass = "tag-neutral";
-      let label = "Chop / wait";
-      if (score >= 5) { tagClass = "tag-bull"; label = "Strong bullish bias"; }
-      else if (score >= 1) { tagClass = "tag-bull"; label = "Mild bullish bias"; }
-      else if (score <= -5) { tagClass = "tag-bear"; label = "Strong bearish bias"; }
-      else if (score <= -1) { tagClass = "tag-bear"; label = "Mild bearish bias"; }
-
-      const html =
-        `<div class="score-line">
-           Asset: <b>${currentAsset}</b> – Score: <b>${score.toFixed(1)}</b>
-           <span class="tag ${tagClass}">${label}</span>
-         </div>
-         <div>${lines.map(l => "• " + l).join("<br>")}</div>
-         <div style="margin-top:8px;color:#9ca3af;font-size:0.8rem;">
-           Use this only as directional context. Position sizing &amp; risk are more important than the direction itself.
-         </div>`;
-      resultBox.innerHTML = html;
+      resultDiv.innerHTML = `
+        <div class="score-line">
+          <span>资产：<strong>${asset}</strong></span>
+          <span>总分：<strong>${score.toFixed(1)}</strong></span>
+          <span class="pill ${pillClass}">
+            <span class="light ${lightClass}"></span>
+            &nbsp;${biasText}
+          </span>
+        </div>
+        ${bullList}
+        ${bearList}
+        <div class="disclaimer">
+          说明：系统只是帮你把分散的信息整理成「偏多 / 偏空」的概率倾向，<br>
+          不会替你决定买 Call / Put。最终下单前，你仍然要问自己三件事：<br>
+          1）仓位是不是足够小？ 2）止损在哪里？ 3）如果完全错了，我能不能接受？
+        </div>
+      `;
     }
-
-    // ---- trade journal (localStorage, private) ----
-    function getAllTrades() {
-      try {
-        const raw = localStorage.getItem("cryptoTrades");
-        if (!raw) return [];
-        return JSON.parse(raw);
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveAllTrades(trades) {
-      localStorage.setItem("cryptoTrades", JSON.stringify(trades));
-    }
-
-    function addTrade() {
-      const side = document.getElementById("side").value;
-      const entry = document.getElementById("entry").value;
-      const size = document.getElementById("size").value;
-      const target = document.getElementById("target").value;
-      const notes = document.getElementById("notes").value;
-
-      if (!entry) {
-        alert("Please enter an entry price.");
-        return;
-      }
-
-      const trades = getAllTrades();
-      trades.push({
-        asset: currentAsset,
-        side,
-        entry,
-        size,
-        target,
-        notes,
-        time: new Date().toLocaleString()
-      });
-      saveAllTrades(trades);
-
-      document.getElementById("entry").value = "";
-      document.getElementById("size").value = "";
-      document.getElementById("target").value = "";
-      document.getElementById("notes").value = "";
-
-      renderTrades();
-    }
-
-    function renderTrades() {
-      const trades = getAllTrades().filter(t => t.asset === currentAsset);
-      if (!trades.length) {
-        tradeListEl.innerHTML = "<li>No trades yet for " + currentAsset + ".</li>";
-        return;
-      }
-      let html = "";
-      trades.slice().reverse().forEach(t => {
-        const sideClass = t.side === "LONG" ? "side-long" : "side-short";
-        html += `<li>
-          <div><span class="asset">[${t.asset}]</span>
-               <span class="${sideClass}">${t.side}</span> @ ${t.entry}
-               ${t.size ? " · Size: " + t.size : ""}</div>
-          ${t.target ? `<div>Plan: ${t.target}</div>` : ""}
-          ${t.notes ? `<div>Notes: ${t.notes}</div>` : ""}
-          <div style="color:#6b7280;font-size:0.75rem;">${t.time}</div>
-        </li>`;
-      });
-      tradeListEl.innerHTML = html;
-    }
-
-    // init
-    renderTrades();
   </script>
 </body>
 </html>
